@@ -22,7 +22,7 @@ const StockTable = ({ refresh, onUpdate }) => {
     fetchData();
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
-  }, [refresh, currentPage, pageSize, searchTerm]);
+  }, [refresh, currentPage, pageSize, searchTerm, selectedCategory]);
 
   useEffect(() => {
     setCurrentPage(0);
@@ -31,7 +31,7 @@ const StockTable = ({ refresh, onUpdate }) => {
   const fetchData = async () => {
     try {
       const [stockRes, catRes] = await Promise.all([
-        getStockPaginated(currentPage, pageSize, searchTerm),
+        getStockPaginated(currentPage, pageSize, searchTerm, selectedCategory),
         getCategories(),
       ]);
       setStockList(stockRes.data.content || []);
@@ -80,10 +80,8 @@ const StockTable = ({ refresh, onUpdate }) => {
     }
   };
 
-  // Category filter is client-side on current page data
-  const filtered = selectedCategory
-    ? stockList.filter((s) => s.item?.category?.id === parseInt(selectedCategory))
-    : stockList;
+  // No client-side filter needed — backend handles category + search + pagination
+  const filtered = stockList;
 
   const startItem = totalItems === 0 ? 0 : currentPage * pageSize + 1;
   const endItem = Math.min((currentPage + 1) * pageSize, totalItems);

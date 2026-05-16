@@ -17,9 +17,12 @@ API.interceptors.request.use((config) => {
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
+    const url = error.config?.url || "";
+    // Don't redirect on auth endpoints — let the component handle the error
+    if (!url.includes("/auth/") && (error.response?.status === 401 || error.response?.status === 403)) {
       localStorage.removeItem("token");
       localStorage.removeItem("username");
+      localStorage.removeItem("role");
       window.location.href = "/login";
     }
     return Promise.reject(error);
@@ -49,8 +52,11 @@ export const deleteItem = (id) => API.delete(`/items/${id}`);
 
 // Stock Levels
 export const getStock = () => API.get("/stock");
-export const getStockPaginated = (page, size, search = "") =>
-  API.get(`/stock/page?page=${page}&size=${size}&search=${encodeURIComponent(search)}`);
+export const getStockPaginated = (page, size, search = "", categoryId = "") => {
+  let url = `/stock/page?page=${page}&size=${size}&search=${encodeURIComponent(search)}`;
+  if (categoryId) url += `&categoryId=${categoryId}`;
+  return API.get(url);
+};
 export const getStockBelowMin = () => API.get("/stock/below-minimum");
 export const createStock = (data) => API.post("/stock", data);
 export const updateStockQty = (id, qty) => API.put(`/stock/${id}/qty?qty=${qty}`);

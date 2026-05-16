@@ -80,7 +80,7 @@ const AddModal = ({ isOpen, onClose, onAdded }) => {
     if (itemForm.sku.length < 3) { toast.error("SKU must be at least 3 characters"); return; }
     if (!itemForm.categoryId) { toast.error("Select a category"); return; }
     if (!itemForm.supplierId) { toast.error("Select a supplier"); return; }
-    if (!itemForm.qty || parseInt(itemForm.qty) < 0) { toast.error("Enter a valid quantity"); return; }
+    if (!itemForm.qty || parseInt(itemForm.qty) < 1) { toast.error("Enter a valid quantity"); return; }
     if (!itemForm.minQty || parseInt(itemForm.minQty) < 1) { toast.error("Min quantity must be at least 1"); return; }
 
     setLoading(true);

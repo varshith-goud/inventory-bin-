@@ -6,9 +6,6 @@ import {
   PieChart, Pie, Legend,
 } from "recharts";
 import StockTable from "./StockTable";
-import ItemForm from "./ItemForm";
-import CategoryForm from "./CategoryForm";
-import SupplierForm from "./SupplierForm";
 import ReorderModal from "./ReorderModal";
 import AddModal from "./AddModal";
 import TopBar from "./TopBar";
@@ -81,7 +78,7 @@ const InventoryDashboard = ({ onLogout }) => {
     try {
       const res = await suggestReorders();
       if (res.data.length === 0) {
-        toast("All low stock items already have pending reorders", { icon: "ℹ️" });
+        toast("All low stock items already have pending or ordered reorders", { icon: "ℹ️" });
       } else {
         toast.success(`${res.data.length} new reorder(s) created`);
       }

@@ -25,7 +25,7 @@ const ReorderModal = ({ isOpen, onClose, onUpdate }) => {
     try {
       const res = await suggestReorders();
       if (res.data.length === 0) {
-        toast("All low stock items already have pending reorders", { icon: "ℹ️" });
+        toast("All low stock items already have pending Reorders and have Ordered already ", { icon: "ℹ️" });
       } else {
         toast.success(`${res.data.length} new reorder(s) created`);
       }
@@ -51,7 +51,13 @@ const ReorderModal = ({ isOpen, onClose, onUpdate }) => {
   };
 
   const activeReorders = reorders.filter((r) => r.status === "PENDING" || r.status === "ORDERED");
-  const deliveredReorders = reorders.filter((r) => r.status === "DELIVERED");
+ // 1. Filter by DELIVERED status
+// 2. Sort by ID (or date) in descending order
+// 3. Slice the first 5 elements
+const deliveredReorders = reorders
+  .filter((r) => r.status === "DELIVERED")
+  .sort((a, b) => b.id - a.id) // Sorting by ID descending (assuming higher ID = newer)
+  .slice(0, 5);
 
   const statusStyle = (status) => {
     if (status === "PENDING") return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
